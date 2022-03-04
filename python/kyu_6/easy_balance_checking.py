@@ -34,34 +34,46 @@ Notes
 
 """
 
-# Line separator is \r\n in Python
 import re
 
-
+# Line separator is \r\n in Python
 def balance(book: str) -> str:
-    lines = book.split()
     line_sep = "\r\n"
-    num_transactions = len(lines) - 1
-    total_expense = 0
+    lines = book.split("\n")
 
-    result = [_extract_original_balance(lines[0])]
-    temp = lines[1]
-    expense_pattern = '\d+.*?\w+.*?\d+\.?\d?\d?.*'
-    expense_line = re.match(expense_pattern, temp).group(2)
-    print(expense_line)
+    balance_out = "Original Balance: {:.2f}".format
+    original_balance = _extract_original_balance(lines[0])
+    expense_out = "{id} {category} {amount:.2f} Balance {current:.2f}".format
 
+    balance = original_balance
+    result = [balance_out(balance)]
 
+    expense_pattern = r'^(?P<id>\d+).*?(?P<category>\w+).*?(?P<amount>\d+\.?\d?\d?).*$'
+    num_transactions = 0
+    for line in lines[1:]:
+        if line:
+            expense_match = re.match(expense_pattern, line)
+            if expense_match:
+                amount = float(expense_match.group("amount"))
+                balance -= amount
+                category = expense_match.group("category")
+                check_id = expense_match.group("id")
+                result.append(expense_out(id=check_id,
+                                          category=category,
+                                          amount=amount,
+                                          current=balance
+                                          ))
+                num_transactions += 1
 
-    result.append("Total expense 0.00")
-    result.append("Average expense 0.00")
+    total_expense = original_balance - balance
+    result.append(f"Total expense  {total_expense:.2f}")
+    result.append(f"Average expense  {total_expense/max(1.0, num_transactions):.2f}")
     return line_sep.join(result)
 
 
-def _extract_original_balance(balance_line):
+def _extract_original_balance(balance_line: str) -> float:
     balance_pattern = "\d+\.?\d?\d?"
     balance_match = re.match(balance_pattern, balance_line)
 
-    balance_out = ("Original Balance: {:.2f}").format
     if balance_match:
-        original_balance = float(balance_match.group(0))
-        return balance_out(original_balance)
+        return float(balance_match.group(0))
