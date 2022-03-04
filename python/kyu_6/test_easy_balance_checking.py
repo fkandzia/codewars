@@ -10,11 +10,13 @@ Total expense 0.00\r
 Average expense 0.00"""
         assert balance(test_book) == expectation
 
-    # def test_given_2_lines_then_return_formatted_string(self):
-    #     test_book = """1000.00
-    #     125 Market !=:125.45"""
-    #     assert balance(test_book) == """Original Balance: 1000.00\r
-    #     125 Market 125.45 Balance 874.55\r"""
+    def test_given_2_lines_then_return_formatted_string(self):
+        test_book = """1000.00
+        125 Market !=:125.45"""
+        assert balance(test_book) == """Original Balance: 1000.00\r
+        125 Market 125.45 Balance 874.55\r
+        Total expense 125.45\r
+        Average expense 125.45"""
 
 # b1 = """1000.00!=
 #

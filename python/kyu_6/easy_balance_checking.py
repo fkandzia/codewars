@@ -42,8 +42,16 @@ def balance(book: str) -> str:
     lines = book.split()
     line_sep = "\r\n"
     num_transactions = len(lines) - 1
+    total_expense = 0
 
     result = [_extract_original_balance(lines[0])]
+    temp = lines[1]
+    expense_pattern = '\d+.*?\w+.*?\d+\.?\d?\d?.*'
+    expense_line = re.match(expense_pattern, temp).group(2)
+    print(expense_line)
+
+
+
     result.append("Total expense 0.00")
     result.append("Average expense 0.00")
     return line_sep.join(result)
