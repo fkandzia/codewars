@@ -38,32 +38,31 @@ import re
 
 # Line separator is \r\n in Python
 def balance(book: str) -> str:
-    line_sep = "\r\n"
-    lines = book.split("\n")
+    line_sep: str = "\r\n"
+    lines: list[str] = book.split("\n")
 
     balance_out = "Original Balance: {:.2f}".format
-    original_balance = _extract_original_balance(lines[0])
     expense_out = "{id} {category} {amount:.2f} Balance {current:.2f}".format
+    original_balance: float = _extract_original_balance(lines[0])
 
-    balance = original_balance
-    result = [balance_out(balance)]
+    balance: float = original_balance
+    result: list[str] = [balance_out(balance)]
 
-    expense_pattern = r'^(?P<id>\d+).*?(?P<category>\w+).*?(?P<amount>\d+\.?\d?\d?).*$'
-    num_transactions = 0
+    expense_pattern: str = r'^(\d+).*?(\w+).*?(\d+\.?\d?\d?).*$'
+    num_transactions: int = 0
+
     for line in lines[1:]:
-        if line:
-            expense_match = re.match(expense_pattern, line)
-            if expense_match:
-                amount = float(expense_match.group("amount"))
-                balance -= amount
-                category = expense_match.group("category")
-                check_id = expense_match.group("id")
-                result.append(expense_out(id=check_id,
-                                          category=category,
-                                          amount=amount,
-                                          current=balance
-                                          ))
-                num_transactions += 1
+        expense_match = re.match(expense_pattern, line)
+        if expense_match:
+            check_id, category, amount = expense_match.groups()
+            amount = float(amount)
+            balance -= amount
+            result.append(expense_out(id=check_id,
+                                      category=category,
+                                      amount=amount,
+                                      current=balance
+                                      ))
+            num_transactions += 1
 
     total_expense = original_balance - balance
     result.append(f"Total expense  {total_expense:.2f}")
